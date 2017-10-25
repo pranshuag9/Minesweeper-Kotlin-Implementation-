@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:id="@+id/gameContainerLinearLayout"
     android:orientation="vertical"
-    android:layout_margin="8dp"
+    android:background="@android:color/black"
     xmlns:android="http://schemas.android.com/apk/res/android">
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="0dp"
+        android:layout_margin="4dp"
+        android:background="@color/colorRowBackgroundGrey"
+        android:orientation="horizontal">
+    </LinearLayout>
+    <LinearLayout android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_weight="7"
+        android:id="@+id/gameContainerLinearLayout"
+        android:orientation="vertical">
+    </LinearLayout>
 </LinearLayout>

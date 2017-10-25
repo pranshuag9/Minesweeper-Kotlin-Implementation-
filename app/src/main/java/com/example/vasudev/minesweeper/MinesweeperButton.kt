@@ -22,11 +22,14 @@ class MinesweeperButton:Button {
     fun setAsMine(){
         score=-1
     }
-    fun markVisted(){
+    fun markVisited(){
         isVisited=true
     }
     fun checkVisited():Boolean{
         return isVisited
+    }
+    fun checkFlagged():Boolean{
+        return isFlagged
     }
 
 }
