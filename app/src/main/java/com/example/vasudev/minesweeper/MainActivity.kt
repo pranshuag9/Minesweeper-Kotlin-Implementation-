@@ -1,17 +1,17 @@
 package com.example.vasudev.minesweeper
 
-import android.content.Context
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity(), View.OnClickListener, View.OnLongClickListener {
     private val NUMBER_OF_ROWS=13
@@ -40,13 +40,13 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, View.OnLongClick
     }
     private fun setUpBoard() {
         gameContainerLinearLayout.removeAllViews()
+        gameContainerLinearLayout.orientation=LinearLayout.VERTICAL
         gameCellButtons= Array(NUMBER_OF_ROWS,{
             Array(NUMBER_OF_ROWS,{
                 MinesweeperButton(this)
             })
         })
         var i=0
-        var j=0
         rowLayouts= ArrayList()
         while (i<NUMBER_OF_ROWS){
             var rowLayout=LinearLayout(this)
@@ -54,12 +54,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, View.OnLongClick
             rowLayout.layoutParams=rowParams
             rowLayout.orientation=LinearLayout.HORIZONTAL
             rowLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.colorRowBackgroundGrey))
-            rowLayouts.add(rowLayout)
-            gameContainerLinearLayout.addView(rowLayout)
+            rowLayouts.add(i,rowLayout)
             i += 1
         }
+        var buttons=0
+        Toast.makeText(this,i.toString(),Toast.LENGTH_SHORT).show()
         i=0
-        while (i<NUMBER_OF_ROWS){
+        while (i<rowLayouts.size){
+            var j=0
             while (j<NUMBER_OF_ROWS){
                 val currentButton=gameCellButtons[i][j]
                 currentButton.rowId=i
@@ -68,40 +70,46 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, View.OnLongClick
                 val rowParams=LinearLayout.LayoutParams(0,ViewGroup.LayoutParams.MATCH_PARENT,1f)
                 rowParams.setMargins(1,1,1,1)
                 currentButton.layoutParams=rowParams
-                currentButton.gravity=Gravity.CENTER
                 currentButton.setBackgroundResource(R.drawable.unclicked_button)
                 currentButton.setOnClickListener(this)
                 currentButton.setOnLongClickListener(this)
                 rowLayouts[i].addView(currentButton)
+                buttons++
                 j+=1
             }
+            gameContainerLinearLayout.addView(rowLayouts[i])
             i+=1
         }
+        Toast.makeText(this,buttons.toString(),Toast.LENGTH_SHORT).show()
         setMines()
 
     }
     private fun setMines(){
+        Toast.makeText(this,"set Mines",Toast.LENGTH_SHORT).show()
         var i=0
         while (i<NUMBER_OF_MINES){
             val random=Random()
-            var mineRowId=random.nextInt(NUMBER_OF_ROWS)
-            var mineColId=random.nextInt(NUMBER_OF_ROWS)
-            var currentButton=gameCellButtons[mineRowId][mineColId]
+            val mineRowId=random.nextInt(NUMBER_OF_ROWS)
+            val mineColId=random.nextInt(NUMBER_OF_ROWS)
+            val currentButton=gameCellButtons[mineRowId][mineColId]
             if(currentButton.checkMine()){
                 continue
             }
             currentButton.setAsMine()
             var j=0
             while (j<X_COORDINATE_ARRAY.size){
-                var currentRowId=mineRowId+X_COORDINATE_ARRAY[j]
-                var currentColId=mineColId+Y_COORDINATE_ARRAY[j]
+                val currentRowId=mineRowId+X_COORDINATE_ARRAY[j]
+                val currentColId=mineColId+Y_COORDINATE_ARRAY[j]
                 if(currentColId<0 || currentColId>=NUMBER_OF_ROWS){
+                    j+=1
                     continue
                 }
                 if(currentRowId<0 || currentRowId>=NUMBER_OF_ROWS){
+                    j+=1
                     continue
                 }
                 if(gameCellButtons[currentRowId][currentColId].checkMine()){
+                    j+=1
                     continue
                 }
                 gameCellButtons[currentRowId][currentColId].score+=1
@@ -112,8 +120,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, View.OnLongClick
     }
     private fun onLoss(clickedMine:MinesweeperButton){
         var i=0
-        var j=0
         while (i<NUMBER_OF_ROWS){
+            var j=0
             while (j<NUMBER_OF_ROWS){
                 val currentButton=gameCellButtons[i][j]
                 if(currentButton.checkMine()){
@@ -141,8 +149,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, View.OnLongClick
     }
     private fun onGameOver(){
         var i=0
-        var j=0
         while (i<NUMBER_OF_ROWS){
+            var j=0
             while (j<NUMBER_OF_ROWS){
                 val currentButton=gameCellButtons[i][j]
                 currentButton.isClickable=false
@@ -187,35 +195,35 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, View.OnLongClick
         }else if(currentButton.score != BLANK_CELL && !currentButton.checkMine() && !currentButton.checkFlagged() && !currentButton.checkMine()){
             when {
                 currentButton.score==MINE_CELL_SCORE_ONE -> {
-                    currentButton.setBackgroundResource()
+                    currentButton.setBackgroundResource(R.drawable.score_one_resource)
                     CURRENT_SCORE += MINE_CELL_SCORE_ONE
                 }
                 currentButton.score==MINE_CELL_SCORE_TWO -> {
-                    currentButton.setBackgroundResource()
+                    currentButton.setBackgroundResource(R.drawable.score_two_resource)
                     CURRENT_SCORE += MINE_CELL_SCORE_TWO
                 }
                 currentButton.score==MINE_CELL_SCORE_THREE -> {
-                    currentButton.setBackgroundResource()
+                    currentButton.setBackgroundResource(R.drawable.score_three_resource)
                     CURRENT_SCORE += MINE_CELL_SCORE_THREE
                 }
                 currentButton.score==MINE_CELL_SCORE_FOUR -> {
-                    currentButton.setBackgroundResource()
+                    currentButton.setBackgroundResource(R.drawable.score_four_resource)
                     CURRENT_SCORE += MINE_CELL_SCORE_FOUR
                 }
                 currentButton.score==MINE_CELL_SCORE_FIVE -> {
-                    currentButton.setBackgroundResource()
+                    currentButton.setBackgroundResource(R.drawable.score_five_resource)
                     CURRENT_SCORE += MINE_CELL_SCORE_FIVE
                 }
                 currentButton.score==MINE_CELL_SCORE_SIX -> {
-                    currentButton.setBackgroundResource()
+                    currentButton.setBackgroundResource(R.drawable.score_six_resource)
                     CURRENT_SCORE += MINE_CELL_SCORE_SIX
                 }
                 currentButton.score==MINE_CELL_SCORE_SEVEN -> {
-                    currentButton.setBackgroundResource()
+                    currentButton.setBackgroundResource(R.drawable.score_seven_resource)
                     CURRENT_SCORE += MINE_CELL_SCORE_SEVEN
                 }
                 currentButton.score==MINE_CELL_SCORE_EIGHT -> {
-                    currentButton.setBackgroundResource()
+                    currentButton.setBackgroundResource(R.drawable.score_eight_resource)
                     CURRENT_SCORE += MINE_CELL_SCORE_EIGHT
                 }
             }
@@ -270,9 +278,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, View.OnLongClick
             return true
         }
         var i=0
-        var j=0
         var checkerScore=0
         while (i<NUMBER_OF_ROWS){
+            var j=0
             while (j<NUMBER_OF_ROWS){
                 val currentButton=gameCellButtons[i][j]
                 if(currentButton.score>=0){
@@ -289,8 +297,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, View.OnLongClick
     }
     private fun onWin(){
         var i=0
-        var j=0
         while (i<NUMBER_OF_ROWS) {
+            var j=0
             while (j < NUMBER_OF_ROWS) {
                 val currentButton = gameCellButtons[i][j]
                 if (currentButton.checkMine()) {
@@ -307,29 +315,29 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, View.OnLongClick
                 } else {
                     when {
                         currentButton.score == MINE_CELL_SCORE_ONE -> {
-                            currentButton.setBackgroundResource()
+                            currentButton.setBackgroundResource(R.drawable.score_one_resource)
                         }
                         currentButton.score == MINE_CELL_SCORE_TWO -> {
-                            currentButton.setBackgroundResource()
+                            currentButton.setBackgroundResource(R.drawable.score_two_resource)
                         }
                         currentButton.score == MINE_CELL_SCORE_THREE -> {
-                            currentButton.setBackgroundResource()
+                            currentButton.setBackgroundResource(R.drawable.score_three_resource)
                         }
                         currentButton.score == MINE_CELL_SCORE_FOUR -> {
-                            currentButton.setBackgroundResource()
+                            currentButton.setBackgroundResource(R.drawable.score_four_resource)
                         }
                         currentButton.score == MINE_CELL_SCORE_FIVE -> {
-                            currentButton.setBackgroundResource()
+                            currentButton.setBackgroundResource(R.drawable.score_five_resource)
                         }
                         currentButton.score == MINE_CELL_SCORE_SIX -> {
-                            currentButton.setBackgroundResource()
+                            currentButton.setBackgroundResource(R.drawable.score_six_resource)
 
                         }
                         currentButton.score == MINE_CELL_SCORE_SEVEN -> {
-                            currentButton.setBackgroundResource()
+                            currentButton.setBackgroundResource(R.drawable.score_seven_resource)
                         }
                         currentButton.score == MINE_CELL_SCORE_EIGHT -> {
-                            currentButton.setBackgroundResource()
+                            currentButton.setBackgroundResource(R.drawable.score_eight_resource)
                         }
                     }
                     j += 1
@@ -337,6 +345,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, View.OnLongClick
                 i += 1
             }
         }
-
+        Toast.makeText(this,"You Won",Toast.LENGTH_SHORT).show()
     }
 }
