@@ -58,7 +58,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, View.OnLongClick
             i += 1
         }
         var buttons=0
-        Toast.makeText(this,i.toString(),Toast.LENGTH_SHORT).show()
         i=0
         while (i<rowLayouts.size){
             var j=0
@@ -80,44 +79,46 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, View.OnLongClick
             gameContainerLinearLayout.addView(rowLayouts[i])
             i+=1
         }
-        Toast.makeText(this,buttons.toString(),Toast.LENGTH_SHORT).show()
         setMines()
 
     }
     private fun setMines(){
-        Toast.makeText(this,"set Mines",Toast.LENGTH_SHORT).show()
-        var i=0
-        while (i<NUMBER_OF_MINES){
-            val random=Random()
-            val mineRowId=random.nextInt(NUMBER_OF_ROWS)
-            val mineColId=random.nextInt(NUMBER_OF_ROWS)
+        var i=NUMBER_OF_MINES
+        val random=Random()
+        while (i>0){
+            val mineRowId=random.nextInt(NUMBER_OF_ROWS-1)
+            val mineColId=random.nextInt(NUMBER_OF_ROWS-1)
             val currentButton=gameCellButtons[mineRowId][mineColId]
-            if(currentButton.checkMine()){
-                i += 1
+            if(mineColId>=NUMBER_OF_ROWS || mineColId<0 || mineRowId>=NUMBER_OF_ROWS || mineRowId<0){
                 continue
             }
-            currentButton.setAsMine()
-            var j=0
-            while (j<X_COORDINATE_ARRAY.size){
-                val currentRowId=mineRowId+X_COORDINATE_ARRAY[j]
-                val currentColId=mineColId+Y_COORDINATE_ARRAY[j]
-                if(currentColId<0 || currentColId>=NUMBER_OF_ROWS){
+            else if(currentButton.isMine && currentButton.score == -1){
+                continue
+            }else{
+                currentButton.setAsMine()
+                var j=0
+                while (j<X_COORDINATE_ARRAY.size){
+                    val currentRowId=mineRowId+X_COORDINATE_ARRAY[j]
+                    val currentColId=mineColId+Y_COORDINATE_ARRAY[j]
+                    if(currentColId<0 || currentColId>=NUMBER_OF_ROWS){
+                        j+=1
+                        continue
+                    }
+                    if(currentRowId<0 || currentRowId>=NUMBER_OF_ROWS){
+                        j+=1
+                        continue
+                    }
+                    if(gameCellButtons[currentRowId][currentColId].checkMine()){
+                        j+=1
+                        continue
+                    }
+                    gameCellButtons[currentRowId][currentColId].score+=1
                     j+=1
-                    continue
                 }
-                if(currentRowId<0 || currentRowId>=NUMBER_OF_ROWS){
-                    j+=1
-                    continue
-                }
-                if(gameCellButtons[currentRowId][currentColId].checkMine()){
-                    j+=1
-                    continue
-                }
-                gameCellButtons[currentRowId][currentColId].score+=1
-                j+=1
             }
-            i+=1
+            i-=1
         }
+        Toast.makeText(this,"Mines Set",Toast.LENGTH_SHORT).show()
     }
     private fun onLoss(clickedMine:MinesweeperButton){
         var i=0
@@ -141,7 +142,33 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, View.OnLongClick
                         currentButton.setBackgroundResource(R.drawable.incorrect_flag)
                     }
                 }else{
+                    when {
+                        currentButton.score == MINE_CELL_SCORE_ONE -> {
+                            currentButton.setBackgroundResource(R.drawable.score_one_resource)
+                        }
+                        currentButton.score == MINE_CELL_SCORE_TWO -> {
+                            currentButton.setBackgroundResource(R.drawable.score_two_resource)
+                        }
+                        currentButton.score == MINE_CELL_SCORE_THREE -> {
+                            currentButton.setBackgroundResource(R.drawable.score_three_resource)
+                        }
+                        currentButton.score == MINE_CELL_SCORE_FOUR -> {
+                            currentButton.setBackgroundResource(R.drawable.score_four_resource)
+                        }
+                        currentButton.score == MINE_CELL_SCORE_FIVE -> {
+                            currentButton.setBackgroundResource(R.drawable.score_five_resource)
+                        }
+                        currentButton.score == MINE_CELL_SCORE_SIX -> {
+                            currentButton.setBackgroundResource(R.drawable.score_six_resource)
 
+                        }
+                        currentButton.score == MINE_CELL_SCORE_SEVEN -> {
+                            currentButton.setBackgroundResource(R.drawable.score_seven_resource)
+                        }
+                        currentButton.score == MINE_CELL_SCORE_EIGHT -> {
+                            currentButton.setBackgroundResource(R.drawable.score_eight_resource)
+                        }
+                    }
                 }
                 j+=1
             }
@@ -162,32 +189,17 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, View.OnLongClick
     }
     override fun onClick(p0: View?) {
         if(GAME_OVER_CHECKER){
+            Toast.makeText(this,GAME_OVER_CHECKER.toString(),Toast.LENGTH_SHORT).show()
             return
         }
         val currentButton:MinesweeperButton = p0 as MinesweeperButton
+        Toast.makeText(this,currentButton.isClickable.toString(),Toast.LENGTH_SHORT).show()
         if(currentButton.checkVisited()){
-//            var neighbouringFlags=0
-//            var i=0
-//            while (i<X_COORDINATE_ARRAY.size){
-//                var rowId=currentButton.rowId+X_COORDINATE_ARRAY[i]
-//                var colId=currentButton.colId+Y_COORDINATE_ARRAY[i]
-//                if (rowId>=NUMBER_OF_ROWS || rowId<0 || colId>=NUMBER_OF_ROWS || colId<0){
-//                    i += 1
-//                    continue
-//                }
-//                if(gameCellButtons[rowId][colId].checkFlagged()){
-//                    neighbouringFlags+=1
-//                }s
-//                if(currentButton.score==neighbouringFlags){
-//
-//                }
-//            }
             return
         }
         else if(currentButton.checkFlagged()){
             return
         }else if(currentButton.checkMine()){
-            currentButton.markVisited()
             GAME_OVER_CHECKER=true
             Toast.makeText(this,"GAME OVER!",Toast.LENGTH_SHORT).show()
             onLoss(currentButton)
@@ -312,6 +324,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, View.OnLongClick
                 } else if (currentButton.checkFlagged()) {
                     if (currentButton.checkMine()) {
                         currentButton.setBackgroundResource(R.drawable.flag)
+                    }else{
+                        currentButton.setBackgroundResource(R.drawable.incorrect_flag)
                     }
                 } else {
                     when {
@@ -341,10 +355,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, View.OnLongClick
                             currentButton.setBackgroundResource(R.drawable.score_eight_resource)
                         }
                     }
-                    j += 1
                 }
-                i += 1
+                j += 1
             }
+            i += 1
         }
         Toast.makeText(this,"You Won",Toast.LENGTH_SHORT).show()
     }

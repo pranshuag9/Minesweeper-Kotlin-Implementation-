@@ -17,19 +17,20 @@ class MinesweeperButton:Button {
     constructor(context: Context) : super(context)
 
     fun checkMine():Boolean{
-        return isMine==true and (score == -1)
+        return (this.isMine==true) && (this.score == -1)
     }
     fun setAsMine(){
-        score=-1
+        this.score=-1
+        this.isMine=true
     }
     fun markVisited(){
-        isVisited=true
+        this.isVisited=true
     }
     fun checkVisited():Boolean{
-        return isVisited
+        return this.isVisited
     }
     fun checkFlagged():Boolean{
-        return isFlagged
+        return this.isFlagged
     }
 
 }
