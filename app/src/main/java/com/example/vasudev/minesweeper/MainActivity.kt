@@ -14,7 +14,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity(), View.OnClickListener, View.OnLongClickListener {
-    private val NUMBER_OF_ROWS=13
+    private val NUMBER_OF_ROWS=16
     private val NUMBER_OF_MINES=25
     private val BLANK_CELL=0
     private val MINE_CELL_SCORE_ONE=1
@@ -93,6 +93,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, View.OnLongClick
             val mineColId=random.nextInt(NUMBER_OF_ROWS)
             val currentButton=gameCellButtons[mineRowId][mineColId]
             if(currentButton.checkMine()){
+                i += 1
                 continue
             }
             currentButton.setAsMine()
