@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical"
+    tools:context="com.example.vasudev.minesweeper.SplashActivity.SplashActivity">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:text=" @ "
+                android:textStyle="bold"
+                android:paddingTop="6dp"
+                android:textColor="@android:color/black"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_acm_mait"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:text=" Acm-MAIT "
+                android:fontFamily="@font/paddington_bold"
+                android:layout_marginRight="10dp"
+                android:layout_gravity="center"
+                android:textColor="@android:color/black"/>
+        </LinearLayout>
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/splashAnimationView"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_margin="32dp"
+            app:lottie_fileName="splash_anim.json"
+            app:lottie_loop="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:fontFamily="@font/paddington_bold"
+            android:text="We strongly belive in turning coffee to code"
+            android:textColor="@android:color/black" />
+    </LinearLayout>
+
+</RelativeLayout>
