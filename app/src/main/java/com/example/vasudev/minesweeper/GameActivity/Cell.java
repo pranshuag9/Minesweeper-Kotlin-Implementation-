@@ -17,6 +17,11 @@ public class Cell extends android.support.v7.widget.AppCompatButton {
 
     public Cell(Context context) {
         super(context);
+        this.rowIndex=-1;
+        this.colIndex=-1;
+        this.scoreValue=-1;
+        this.isFlagged=false;
+        this.isVisited=false;
     }
 
     public int getRowIndex() {
@@ -58,4 +63,6 @@ public class Cell extends android.support.v7.widget.AppCompatButton {
     public void setVisited(boolean visited) {
         isVisited = visited;
     }
+
+    public boolean isMine(){return scoreValue==-1;}
 }
