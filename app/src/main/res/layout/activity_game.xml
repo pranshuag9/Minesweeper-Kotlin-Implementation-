@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.vasudev.minesweeper.GameActivity.GameActivity">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.10"
+        android:orientation="horizontal"
+        android:elevation="4dp"
+        android:background="@color/colorPrimary"
+        android:weightSum="1"
+        android:id="@+id/scoreContainerLayout">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="0.21"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:text="SCORE"
+            android:textAlignment="gravity"
+            android:fontFamily="@font/kid_kosmic"
+            android:textColor="@android:color/holo_red_light"
+            android:id="@+id/scoreAnimationView"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginLeft="2dp"
+            android:id="@+id/scoreTextView"
+            android:layout_weight="0.15"
+            android:text="0"
+            android:fontFamily="@font/digiface_regular"
+            android:padding="8dp"
+            android:textSize="25sp"
+            android:textAlignment="center"
+            android:textColor="@android:color/holo_red_light"
+            android:background="@drawable/score_text_view_background"/>
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:layout_width="0dp"
+            android:layout_weight="0.2"
+            android:layout_margin="4dp"
+            android:layout_height="match_parent"
+            android:id="@+id/emojiAnimationView"
+            app:lottie_loop="true"
+            app:lottie_fileName="gen_anim.json"/>
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:layout_width="0dp"
+            android:layout_weight="0.2"
+            android:layout_margin="4dp"
+            android:layout_height="match_parent"
+            android:id="@+id/timeAnimationView"
+            app:lottie_loop="true"
+            app:lottie_fileName="time_anim.json"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="0.2"
+            android:layout_margin="2dp"
+            android:layout_height="wrap_content"
+            android:text="help?"
+            android:paddingTop="4dp"
+            android:fontFamily="@font/kid_kosmic"
+            android:textColor="@android:color/holo_red_light"
+            android:id="@+id/flagsTextView"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.9"
+        android:paddingTop="4dp"
+        android:background="@android:color/black"
+        android:orientation="vertical"
+        android:id="@+id/gameContainerLayout">
+    </LinearLayout>
+
+</LinearLayout>
