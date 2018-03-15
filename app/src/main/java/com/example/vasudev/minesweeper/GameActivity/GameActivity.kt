@@ -85,8 +85,7 @@ class GameActivity : AppCompatActivity() {
                 if(cell.isVisited){
                     //no need to anything as nothing is required
                 }
-
-                if(cell.isFlagged){
+                else if(cell.isFlagged){
                     cell.isFlagged=false
                     cell.background=ContextCompat.getDrawable(context,R.drawable.unclicked_button)
                     NUMBER_OF_FLAGS_USED -= 1
@@ -108,84 +107,86 @@ class GameActivity : AppCompatActivity() {
                 }
 
                 //check cell is flagged or visited
-                if(cell.isFlagged or cell.isVisited){
-                    //no need to anything as nothing is required
-                }
-
-                //check if cell is mine
-                else if (cell.isMine){
-
-                    //game over,
-                    cell.background=ContextCompat.getDrawable(context,R.drawable.clicked_mine)
-
-                    //mark cell as visited
-                    cell.isVisited=true
-
-                    //perform tasks when user losses
-                    onLoss(cell.rowIndex,cell.colIndex)
-                }
-
-                else{
-
-                    //mark cell as visited
-                    cell.isVisited=true
-
-                    when {
-                        cell.scoreValue==0 -> {
-
-                            //found score 0 cell
-                            cell.setBackgroundColor(Color.LTGRAY)
-
-                            //call recursive function on surrounding cells
-                            scoreZeroCellClicked(cell.rowIndex,cell.colIndex)
-                        }
-                        cell.scoreValue==1 -> {
-
-                            //found score 1 cell
-                            cell.background=ContextCompat.getDrawable(context,R.drawable.score_one_resource)
-                        }
-                        cell.scoreValue==2 -> {
-
-                            //found score 2 cell
-                            cell.background=ContextCompat.getDrawable(context,R.drawable.score_two_resource)
-                        }
-                        cell.scoreValue==3 -> {
-
-                            //found score 3 cell
-                            cell.background=ContextCompat.getDrawable(context,R.drawable.score_three_resource)
-                        }
-                        cell.scoreValue==4 -> {
-
-                            //found score 4 cell
-                            cell.background=ContextCompat.getDrawable(context,R.drawable.score_four_resource)
-                        }
-                        cell.scoreValue==5 -> {
-
-                            //found score 5 cell
-                            cell.background=ContextCompat.getDrawable(context,R.drawable.score_five_resource)
-                        }
-                        cell.scoreValue==6 -> {
-
-                            //found score 6 cell
-                            cell.background=ContextCompat.getDrawable(context,R.drawable.score_six_resource)
-                        }
-                        cell.scoreValue==7 -> {
-
-                            //found score 7 cell
-                            cell.background=ContextCompat.getDrawable(context,R.drawable.score_seven_resource)
-                        }
-                        cell.scoreValue==8 -> {
-
-                            //found score 8 cell
-                            cell.background=ContextCompat.getDrawable(context,R.drawable.score_eight_resource)
-                        }
+                when {
+                    cell.isFlagged or cell.isVisited -> {
+                        //no need to anything as nothing is required
+                        return@setOnClickListener
                     }
 
-                    //update player score
-                    CURRENT_USER_SCORE += cell.scoreValue
+                //check if cell is mine
+                    cell.isMine -> {
 
-                    //check if user has won
-                    checkWin()
+                        //game over,
+                        cell.background=ContextCompat.getDrawable(context,R.drawable.clicked_mine)
+
+                        //mark cell as visited
+                        cell.isVisited=true
+
+                        //perform tasks when user losses
+                        onLoss(cell.rowIndex,cell.colIndex)
+                    }
+                    else -> {
+
+                        //mark cell as visited
+                        cell.isVisited=true
+
+                        when {
+                            cell.scoreValue==0 -> {
+
+                                //found score 0 cell
+                                cell.setBackgroundColor(Color.LTGRAY)
+
+                                //call recursive function on surrounding cells
+                                scoreZeroCellClicked(cell.rowIndex,cell.colIndex)
+                            }
+                            cell.scoreValue==1 -> {
+
+                                //found score 1 cell
+                                cell.background=ContextCompat.getDrawable(context,R.drawable.score_one_resource)
+                            }
+                            cell.scoreValue==2 -> {
+
+                                //found score 2 cell
+                                cell.background=ContextCompat.getDrawable(context,R.drawable.score_two_resource)
+                            }
+                            cell.scoreValue==3 -> {
+
+                                //found score 3 cell
+                                cell.background=ContextCompat.getDrawable(context,R.drawable.score_three_resource)
+                            }
+                            cell.scoreValue==4 -> {
+
+                                //found score 4 cell
+                                cell.background=ContextCompat.getDrawable(context,R.drawable.score_four_resource)
+                            }
+                            cell.scoreValue==5 -> {
+
+                                //found score 5 cell
+                                cell.background=ContextCompat.getDrawable(context,R.drawable.score_five_resource)
+                            }
+                            cell.scoreValue==6 -> {
+
+                                //found score 6 cell
+                                cell.background=ContextCompat.getDrawable(context,R.drawable.score_six_resource)
+                            }
+                            cell.scoreValue==7 -> {
+
+                                //found score 7 cell
+                                cell.background=ContextCompat.getDrawable(context,R.drawable.score_seven_resource)
+                            }
+                            cell.scoreValue==8 -> {
+
+                                //found score 8 cell
+                                cell.background=ContextCompat.getDrawable(context,R.drawable.score_eight_resource)
+                            }
+                        }
+
+                        //update player score
+                        CURRENT_USER_SCORE += cell.scoreValue
+
+                        //check if user has won
+                        checkWin()
+                    }
                 }
 
             }
