@@ -4,10 +4,10 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
+import android.os.SystemClock
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
@@ -34,6 +34,7 @@ class GameActivity : AppCompatActivity() {
     private var CURRENT_USER_SCORE=0
     private var GAME_MAX_SCORE=0
     private var NUMBER_OF_FLAGS_USED=0
+    private var CHRONOMETER_TIME_RECORD_CHECKER=false
 
 
     private fun getCellAtLocation(rowIndex: Int, colIndex: Int, rowLayoutList: ArrayList<LinearLayout>): Cell {
@@ -76,6 +77,11 @@ class GameActivity : AppCompatActivity() {
             //cell onLongClickListener
             cell.setOnLongClickListener {
 
+                if(!CHRONOMETER_TIME_RECORD_CHECKER){
+                    timeKeeperChronometer.start()
+                    CHRONOMETER_TIME_RECORD_CHECKER=true
+                }
+
                 if(cell.isVisited){
                     //no need to anything as nothing is required
                 }
@@ -95,13 +101,19 @@ class GameActivity : AppCompatActivity() {
             //cell onClickListener
             cell.setOnClickListener {
 
+                //start recording time
+                if(!CHRONOMETER_TIME_RECORD_CHECKER){
+                    timeKeeperChronometer.start()
+                    CHRONOMETER_TIME_RECORD_CHECKER=true
+                }
+
                 //check cell is flagged or visited
                 if(cell.isFlagged or cell.isVisited){
                     //no need to anything as nothing is required
                 }
 
                 //check if cell is mine
-                if (cell.isMine){
+                else if (cell.isMine){
 
                     //game over,
                     cell.background=ContextCompat.getDrawable(context,R.drawable.clicked_mine)
@@ -171,7 +183,6 @@ class GameActivity : AppCompatActivity() {
 
                     //update player score
                     CURRENT_USER_SCORE += cell.scoreValue
-                    scoreTextView.text=CURRENT_USER_SCORE.toString()
 
                     //check if user has won
                     checkWin()
@@ -193,6 +204,7 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun handleGameOver(){
+        timeKeeperChronometer.stop()
         for (i in 0 until NUMBER_OF_ROWS){
             for (j in 0 until NUMBER_OF_ROWS){
                 val currentCell=getCellAtLocation(i,j,rowLayoutList)
@@ -351,11 +363,12 @@ class GameActivity : AppCompatActivity() {
     private fun initializeGameField(){
 
         gameContainerLayout.removeAllViews()
-        //initialize scores and flag count
+        //initialize scores and time
         GAME_MAX_SCORE=0
         CURRENT_USER_SCORE=0
         NUMBER_OF_FLAGS_USED=0
-        scoreTextView.text=CURRENT_USER_SCORE.toString()
+        timeKeeperChronometer.base= SystemClock.elapsedRealtime()
+        CHRONOMETER_TIME_RECORD_CHECKER=false
 
 
         //creating row layouts with cells placed inside each one of them horizontally
@@ -391,11 +404,12 @@ class GameActivity : AppCompatActivity() {
             }
         }
 
-        //initialize scores and flag count
+        //initialize scores and time
         GAME_MAX_SCORE=0
         CURRENT_USER_SCORE=0
         NUMBER_OF_FLAGS_USED=0
-        scoreTextView.text=CURRENT_USER_SCORE.toString()
+        timeKeeperChronometer.base=SystemClock.elapsedRealtime()
+        CHRONOMETER_TIME_RECORD_CHECKER=false
 
         //set mines again
         setMines(rowLayoutList)
@@ -415,5 +429,11 @@ class GameActivity : AppCompatActivity() {
 
         //setup game field
         initializeGameField()
+
+        //handle mid game restart
+        emojiAnimationView.setOnClickListener {
+            handleGameOver()
+            resetGameField()
+        }
     }
 }
