@@ -3,11 +3,16 @@ package com.example.vasudev.minesweeper.GameActivity
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.Toast
+import com.airbnb.lottie.LottieAnimationView
 import com.example.vasudev.minesweeper.R
 import kotlinx.android.synthetic.main.activity_game.*
 import java.util.*
@@ -28,6 +33,7 @@ class GameActivity : AppCompatActivity() {
     //score variables for the game
     private var CURRENT_USER_SCORE=0
     private var GAME_MAX_SCORE=0
+    private var NUMBER_OF_FLAGS_USED=0
 
 
     private fun getCellAtLocation(rowIndex: Int, colIndex: Int, rowLayoutList: ArrayList<LinearLayout>): Cell {
@@ -67,12 +73,31 @@ class GameActivity : AppCompatActivity() {
             cell.isFlagged = false
             cell.scoreValue = 0
 
+            //cell onLongClickListener
+            cell.setOnLongClickListener {
+
+                if(cell.isVisited){
+                    //no need to anything as nothing is required
+                }
+
+                if(cell.isFlagged){
+                    cell.isFlagged=false
+                    cell.background=ContextCompat.getDrawable(context,R.drawable.unclicked_button)
+                    NUMBER_OF_FLAGS_USED -= 1
+                }else{
+                    cell.isFlagged=true
+                    cell.background=ContextCompat.getDrawable(context,R.drawable.flag)
+                    NUMBER_OF_FLAGS_USED += 1
+                }
+
+                true }
+
             //cell onClickListener
             cell.setOnClickListener {
 
                 //check cell is flagged or visited
                 if(cell.isFlagged or cell.isVisited){
-                    //No need to anything as nothing is required
+                    //no need to anything as nothing is required
                 }
 
                 //check if cell is mine
@@ -145,7 +170,8 @@ class GameActivity : AppCompatActivity() {
                     }
 
                     //update player score
-                    CURRENT_USER_SCORE=CURRENT_USER_SCORE+cell.scoreValue
+                    CURRENT_USER_SCORE += cell.scoreValue
+                    scoreTextView.text=CURRENT_USER_SCORE.toString()
 
                     //check if user has won
                     checkWin()
@@ -222,9 +248,41 @@ class GameActivity : AppCompatActivity() {
 
     private fun onLoss(rowIndex: Int, colIndex: Int) {
         handleGameOver()
-        var clickedMineCell=getCellAtLocation(rowIndex,colIndex,rowLayoutList)
+        val clickedMineCell=getCellAtLocation(rowIndex,colIndex,rowLayoutList)
         clickedMineCell.background=ContextCompat.getDrawable(this@GameActivity,R.drawable.clicked_mine)
-        Toast.makeText(this@GameActivity,"Sorry You Lost",Toast.LENGTH_SHORT).show()
+
+        Handler().postDelayed({
+
+            //build loss dialog
+            val lossDialogBuilder=AlertDialog.Builder(this@GameActivity)
+
+            //attach view xml to dialog
+            val dialogView=layoutInflater.inflate(R.layout.loss_dialog,null)
+            lossDialogBuilder.setView(dialogView)
+            val lossDialog=lossDialogBuilder.create()
+
+            //play animation
+            val lossDialogAnimationView=dialogView.findViewById<LottieAnimationView>(R.id.lossAnimationView)
+            lossDialogAnimationView.playAnimation()
+
+            //handle clicks on option buttons
+            val lossDialogPlayAgainButton=dialogView.findViewById<Button>(R.id.lossPlayAgainButton)
+            lossDialogPlayAgainButton.setOnClickListener {
+
+                lossDialog.dismiss()
+                resetGameField() }
+
+            val lossDialogQuitButton=dialogView.findViewById<Button>(R.id.lossQuitButton)
+            lossDialogQuitButton.setOnClickListener {
+                lossDialog.dismiss()
+                finish()
+            }
+
+            //show dialog on screen
+            lossDialog.show()
+
+        },1000)
+
     }
 
     private fun setMines(rowLayoutList: ArrayList<LinearLayout>) {
@@ -290,16 +348,15 @@ class GameActivity : AppCompatActivity() {
             ((currentRow < 0) or (currentRow >= NUMBER_OF_ROWS) or (currentCol < 0) or (currentCol >= NUMBER_OF_ROWS))
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_game)
+    private fun initializeGameField(){
 
-        //Setting Background color programmatically for container linear Layouts
-        scoreContainerLayout.setBackgroundColor(Color.LTGRAY)
+        gameContainerLayout.removeAllViews()
+        //initialize scores and flag count
+        GAME_MAX_SCORE=0
+        CURRENT_USER_SCORE=0
+        NUMBER_OF_FLAGS_USED=0
+        scoreTextView.text=CURRENT_USER_SCORE.toString()
 
-        //enabling animations
-        timeAnimationView.playAnimation()
-        emojiAnimationView.playAnimation()
 
         //creating row layouts with cells placed inside each one of them horizontally
         for (i in 0 until NUMBER_OF_ROWS) {
@@ -316,5 +373,47 @@ class GameActivity : AppCompatActivity() {
 
         //setting mines in the field
         setMines(rowLayoutList)
+    }
+
+    private fun resetGameField(){
+
+        //reset properties of cell as initial ones instead of making new cells
+        for (i in 0 until NUMBER_OF_ROWS){
+            for (j in 0 until NUMBER_OF_ROWS){
+                val currentCell=getCellAtLocation(i,j,rowLayoutList)
+                currentCell.background=ContextCompat.getDrawable(this@GameActivity,R.drawable.unclicked_button)
+                currentCell.isClickable=true
+                currentCell.rowIndex=i
+                currentCell.colIndex=j
+                currentCell.scoreValue=0
+                currentCell.isVisited=false
+                currentCell.isFlagged=false
+            }
+        }
+
+        //initialize scores and flag count
+        GAME_MAX_SCORE=0
+        CURRENT_USER_SCORE=0
+        NUMBER_OF_FLAGS_USED=0
+        scoreTextView.text=CURRENT_USER_SCORE.toString()
+
+        //set mines again
+        setMines(rowLayoutList)
+
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_game)
+
+        //Setting Background color programmatically for container linear Layouts
+        scoreContainerLayout.setBackgroundColor(Color.LTGRAY)
+
+        //enabling animations
+        timeAnimationView.playAnimation()
+        emojiAnimationView.playAnimation()
+
+        //setup game field
+        initializeGameField()
     }
 }
