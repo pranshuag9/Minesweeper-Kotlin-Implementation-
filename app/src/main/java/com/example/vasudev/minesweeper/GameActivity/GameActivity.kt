@@ -9,9 +9,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.Toast
+import android.widget.*
 import com.airbnb.lottie.LottieAnimationView
 import com.example.vasudev.minesweeper.R
 import kotlinx.android.synthetic.main.activity_game.*
@@ -224,7 +222,54 @@ class GameActivity : AppCompatActivity() {
 
         if(CURRENT_USER_SCORE==GAME_MAX_SCORE){
             handleGameOver()
-            Toast.makeText(this@GameActivity,"You won",Toast.LENGTH_SHORT).show()
+            Handler().postDelayed({
+
+                //build loss dialog
+                val winDialogBuilder=AlertDialog.Builder(this@GameActivity)
+
+                //attach view xml to dialog
+                val dialogView=layoutInflater.inflate(R.layout.win_dialog,null)
+                winDialogBuilder.setView(dialogView)
+                val winDialog=winDialogBuilder.create()
+
+                //play animation
+                val winDialogAnimationView=dialogView.findViewById<LottieAnimationView>(R.id.winAnimationView)
+                winDialogAnimationView.playAnimation()
+
+                //show score
+                val scoreTextView=dialogView.findViewById<TextView>(R.id.scoreTextView)
+                val scoreText="Your Time (Score) "+timeKeeperChronometer.text.toString()
+                scoreTextView.text=scoreText
+
+                //handle edit text
+                val nameEditText=dialogView.findViewById<EditText>(R.id.nameEditText)
+
+                //handle clicks on option buttons
+                val winDialogSubmitButton=dialogView.findViewById<Button>(R.id.winSubmitButton)
+                winDialogSubmitButton.setOnClickListener {
+
+                    if (nameEditText.text.toString().trim().isEmpty()) {
+                        nameEditText.error = "Name cannot be empty"
+                    } else {
+                        winDialog.dismiss()
+                        resetGameField()
+                        Toast.makeText(this@GameActivity,"Your score was submitted",Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                val winDialogQuitButton=dialogView.findViewById<Button>(R.id.winQuitButton)
+                winDialogQuitButton.setOnClickListener {
+                    winDialog.dismiss()
+                    finish()
+                }
+
+                winDialog.setCanceledOnTouchOutside(true)
+
+                //show dialog on screen
+                winDialog.show()
+
+            },1000)
+
         }
     }
 
@@ -261,6 +306,8 @@ class GameActivity : AppCompatActivity() {
 
     private fun onLoss(rowIndex: Int, colIndex: Int) {
         handleGameOver()
+
+        //highlight the clicked mine
         val clickedMineCell=getCellAtLocation(rowIndex,colIndex,rowLayoutList)
         clickedMineCell.background=ContextCompat.getDrawable(this@GameActivity,R.drawable.clicked_mine)
 
@@ -290,6 +337,8 @@ class GameActivity : AppCompatActivity() {
                 lossDialog.dismiss()
                 finish()
             }
+
+            lossDialog.setCanceledOnTouchOutside(true)
 
             //show dialog on screen
             lossDialog.show()
