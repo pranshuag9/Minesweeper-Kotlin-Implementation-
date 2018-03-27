@@ -1,6 +1,7 @@
 package com.example.vasudev.minesweeper.GameActivity
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -14,6 +15,7 @@ import android.widget.*
 import com.airbnb.lottie.LottieAnimationView
 import com.example.vasudev.minesweeper.R
 import com.example.vasudev.minesweeper.ScoreKeeping.ScoreTransitions
+import com.example.vasudev.minesweeper.ScoreKeeping.ScoresActivity
 import kotlinx.android.synthetic.main.activity_game.*
 import java.util.*
 
@@ -21,7 +23,7 @@ class GameActivity : AppCompatActivity() {
 
     //constant for number of rows in the game
     private var NUMBER_OF_ROWS = 13
-    private var NUMBER_OF_MINES = 1
+    private var NUMBER_OF_MINES = 26
 
     //index arrays for surrounding cells
     private val ROW_INDEXES = intArrayOf(-1, 0, 1, -1, 1, -1, 0, 1)
@@ -489,6 +491,12 @@ class GameActivity : AppCompatActivity() {
 
         //setup game field
         initializeGameField()
+
+        //show high scores activity
+        highScoreTextView.setOnClickListener {
+            val intent=Intent(this@GameActivity,ScoresActivity::class.java)
+            startActivity(intent)
+        }
 
         //handle mid game restart
         emojiAnimationView.setOnClickListener {

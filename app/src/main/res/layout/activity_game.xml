@@ -65,7 +65,7 @@
             android:textSize="16sp"
             android:fontFamily="@font/kid_kosmic"
             android:textColor="@android:color/holo_red_light"
-            android:id="@+id/flagsTextView"/>
+            android:id="@+id/highScoreTextView"/>
 
     </LinearLayout>
 

@@ -1,6 +1,6 @@
 package com.example.vasudev.minesweeper.ScoreKeeping
 
-import android.widget.TextView
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 
 /**
@@ -22,6 +22,20 @@ class ScoreTransitions {
                 }
             }
         }
-
     }
+
+    fun fetchScoreFromDatabase(){
+        val firestore=FirebaseFirestore.getInstance()
+        val scores=firestore.collection("scores")
+                .get()
+                .addOnCompleteListener { p0 ->
+                    for(document:DocumentSnapshot in p0.result){
+                        if(document.exists()){
+                            document.getString("name")
+                            document.get("score")
+                        }
+                    }
+                }
+    }
+
 }
