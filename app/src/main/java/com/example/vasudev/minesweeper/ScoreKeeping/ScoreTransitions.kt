@@ -2,6 +2,7 @@ package com.example.vasudev.minesweeper.ScoreKeeping
 
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import org.greenrobot.eventbus.EventBus
 
 /**
  * Created by Vasudev on 3/27/2018.
@@ -29,12 +30,14 @@ class ScoreTransitions {
         val scores=firestore.collection("scores")
                 .get()
                 .addOnCompleteListener { p0 ->
+                    val scoreList=ArrayList<ScoreRenderModel>()
                     for(document:DocumentSnapshot in p0.result){
                         if(document.exists()){
-                            document.getString("name")
-                            document.get("score")
+                            val scoreRenderModel=ScoreRenderModel(name =document.getString("name"),time =document.getString("score"))
+                            scoreList.add(scoreRenderModel)
                         }
                     }
+                    EventBus.getDefault().post(ScoreRender(scoreList))
                 }
     }
 
