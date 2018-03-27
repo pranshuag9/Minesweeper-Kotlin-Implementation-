@@ -9,12 +9,14 @@ import android.widget.Button;
 
 public class Cell extends android.support.v7.widget.AppCompatButton {
 
+    //properties of every individual cell
     private int rowIndex;
     private int colIndex;
     private int scoreValue;
     private boolean isFlagged;
     private boolean isVisited;
 
+    //constructor
     public Cell(Context context) {
         super(context);
         this.rowIndex=-1;
@@ -24,6 +26,7 @@ public class Cell extends android.support.v7.widget.AppCompatButton {
         this.isVisited=false;
     }
 
+    //getter setter methods
     public int getRowIndex() {
         return rowIndex;
     }

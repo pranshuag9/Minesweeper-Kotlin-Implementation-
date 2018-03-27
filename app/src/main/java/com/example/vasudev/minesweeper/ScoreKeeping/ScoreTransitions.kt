@@ -9,6 +9,7 @@ import org.greenrobot.eventbus.EventBus
  */
 class ScoreTransitions {
 
+    //add new score to database
     fun addScoreToDatabase(name:String,score:String){
         val firestore=FirebaseFirestore.getInstance()
         val scoreMap=HashMap<String,String>()
@@ -25,6 +26,7 @@ class ScoreTransitions {
         }
     }
 
+    //fetch scores from database
     fun fetchScoreFromDatabase(){
         val firestore=FirebaseFirestore.getInstance()
         val scores=firestore.collection("scores")

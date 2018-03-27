@@ -12,6 +12,8 @@ import kotlinx.android.synthetic.main.score_list_item.view.*
 /**
  * Created by Vasudev on 3/27/2018.
  */
+
+//adapter class for recycler view
 class ScoreListAdapter(var context: Context,var scoreList:ArrayList<ScoreRenderModel>):RecyclerView.Adapter<RecyclerView.ViewHolder>(){
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
         val view=LayoutInflater.from(context).inflate(R.layout.score_list_item,parent,false)
@@ -25,6 +27,7 @@ class ScoreListAdapter(var context: Context,var scoreList:ArrayList<ScoreRenderM
     }
 
 }
+//binding single list item into view
 class ScoreViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
     fun bindScoreInListItme(context: Context,scoreRenderModel: ScoreRenderModel){
         itemView.scoreNameTextView.text=scoreRenderModel.name

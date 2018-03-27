@@ -15,18 +15,26 @@ class ScoresActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scores)
+
+        //showing loading progress
         loadingRelativeLayout.visibility=View.VISIBLE
         scoreListLinearLayout.visibility=View.GONE
         loadingAnimView.playAnimation()
+
+        //fetching score
         val scoreTransitions=ScoreTransitions()
         scoreTransitions.fetchScoreFromDatabase()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun renderScore(scoreRender: ScoreRender){
+
+        //hiding loading progress
         loadingRelativeLayout.visibility=View.GONE
         loadingAnimView.cancelAnimation()
         scoreListLinearLayout.visibility=View.VISIBLE
+
+        //rendering fetched score from database in view
         scoreAnimView.playAnimation()
         scoreRecyclerView.layoutManager=LinearLayoutManager(this@ScoresActivity)
         scoreRecyclerView.adapter=ScoreListAdapter(context = this@ScoresActivity,scoreList = scoreRender.arrayList)
