@@ -8,10 +8,12 @@ import android.os.SystemClock
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.ViewGroup
 import android.widget.*
 import com.airbnb.lottie.LottieAnimationView
 import com.example.vasudev.minesweeper.R
+import com.example.vasudev.minesweeper.ScoreKeeping.ScoreTransitions
 import kotlinx.android.synthetic.main.activity_game.*
 import java.util.*
 
@@ -19,7 +21,7 @@ class GameActivity : AppCompatActivity() {
 
     //constant for number of rows in the game
     private var NUMBER_OF_ROWS = 13
-    private var NUMBER_OF_MINES = 26
+    private var NUMBER_OF_MINES = 1
 
     //index arrays for surrounding cells
     private val ROW_INDEXES = intArrayOf(-1, 0, 1, -1, 1, -1, 0, 1)
@@ -203,7 +205,14 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun handleGameOver(){
+
+        //stop chronometer
         timeKeeperChronometer.stop()
+
+        //stop animations
+        timeAnimationView.cancelAnimation()
+        emojiAnimationView.cancelAnimation()
+
         for (i in 0 until NUMBER_OF_ROWS){
             for (j in 0 until NUMBER_OF_ROWS){
                 val currentCell=getCellAtLocation(i,j,rowLayoutList)
@@ -231,10 +240,9 @@ class GameActivity : AppCompatActivity() {
                 val dialogView=layoutInflater.inflate(R.layout.win_dialog,null)
                 winDialogBuilder.setView(dialogView)
                 val winDialog=winDialogBuilder.create()
-
-                //play animation
-                val winDialogAnimationView=dialogView.findViewById<LottieAnimationView>(R.id.winAnimationView)
-                winDialogAnimationView.playAnimation()
+                //show dialog on screen
+                winDialog.show()
+                winDialog.setCanceledOnTouchOutside(true)
 
                 //show score
                 val scoreTextView=dialogView.findViewById<TextView>(R.id.scoreTextView)
@@ -251,6 +259,8 @@ class GameActivity : AppCompatActivity() {
                     if (nameEditText.text.toString().trim().isEmpty()) {
                         nameEditText.error = "Name cannot be empty"
                     } else {
+                        val scoreTransitions=ScoreTransitions()
+                        scoreTransitions.addScoreToDatabase(name = nameEditText.text.toString(),score = timeKeeperChronometer.text.toString())
                         winDialog.dismiss()
                         resetGameField()
                         Toast.makeText(this@GameActivity,"Your score was submitted",Toast.LENGTH_SHORT).show()
@@ -263,12 +273,8 @@ class GameActivity : AppCompatActivity() {
                     finish()
                 }
 
-                winDialog.setCanceledOnTouchOutside(true)
 
-                //show dialog on screen
-                winDialog.show()
-
-            },1000)
+            },500)
 
         }
     }
@@ -439,6 +445,10 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun resetGameField(){
+
+        //enabling animations
+        timeAnimationView.playAnimation()
+        emojiAnimationView.playAnimation()
 
         //reset properties of cell as initial ones instead of making new cells
         for (i in 0 until NUMBER_OF_ROWS){
