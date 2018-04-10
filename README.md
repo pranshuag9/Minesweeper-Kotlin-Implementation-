@@ -20,5 +20,5 @@ https://drive.google.com/open?id=1SbDHQoSbUo9R--8FEYRIdzK9fx5oRowO
 https://github.com/vasudev13/Minesweeper-Kotlin-Implementation-
 
 ## Special Thanks to
-Akshat , Chair @ACM-MAIT
+Akshat , Chair @ACM-MAIT  
 Krazzy Kush, for helping us with technical issues on Day1
