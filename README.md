@@ -15,3 +15,10 @@ Minesweeper game implemented in Kotlin and Firestore for score-keeping.
 
 ## Download APK
 https://drive.google.com/open?id=1SbDHQoSbUo9R--8FEYRIdzK9fx5oRowO
+
+## Github Repo Link of above project
+https://github.com/vasudev13/Minesweeper-Kotlin-Implementation-
+
+## Special Thanks to
+Akshat , Chair @ACM-MAIT
+Krazzy Kush, for helping us with technical issues on Day1
